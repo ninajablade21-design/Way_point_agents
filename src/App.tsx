@@ -212,7 +212,7 @@ export default function App() {
     <aside className={sidebarOpen ? 'conv-bar open' : 'conv-bar'}>
       <div className="conv-bar-head">
         <div className="brand">
-          <div className="logo"><Compass size={18} /></div>
+          <div className="logo"><span className="icon-spin-slow"><Compass size={18} /></span></div>
           <div><strong>WAYPOINT</strong><small>AI ROAD-SAFETY AGENT</small></div>
         </div>
         <button className="close-mobile" onClick={() => setSidebarOpen(false)}><X size={18} /></button>
@@ -230,7 +230,7 @@ export default function App() {
       <div className="conv-bar-foot">
         <button className="foot-btn" onClick={() => { void loadJourneys(); setShowJourneys(true) }}><Shield size={14} /> Saved journeys</button>
         <button className="foot-btn" onClick={() => { void loadTickets(); setShowTickets(true) }}><Ticket size={14} /> Ticket history</button>
-        <div className={`track-toggle ${tracking ? 'on' : ''}`} onClick={toggleTrack}><LocateFixed size={14} /> {tracking ? 'Tracking on' : 'Route tracking'}</div>
+        <div className={`track-toggle ${tracking ? 'on' : ''}`} onClick={toggleTrack}><span className={tracking ? 'icon-radar' : ''}><LocateFixed size={14} /></span> {tracking ? 'Tracking on' : 'Route tracking'}</div>
         <button className="foot-btn" onClick={() => setShowSettings(true)}><Settings size={14} /> Settings</button>
       </div>
     </aside>
@@ -240,9 +240,9 @@ export default function App() {
         <button className="menu-btn" onClick={() => setSidebarOpen(true)}><Compass size={20} /></button>
         <div className="agent-status"><span className={`status-dot ${tracking ? 'live' : ''}`} /><span>{tracking ? 'Agent live · tracking route' : 'Agent ready'}</span></div>
         <div className="header-actions">
-          <button className="icon-btn" onClick={() => setShowCapabilities(true)} title="Capabilities"><Sparkles size={16} /></button>
-          <button className="icon-btn" onClick={toggleTheme} title="Toggle theme">{theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}</button>
-          <button className={`icon-btn ${tracking ? 'active' : ''}`} onClick={toggleTrack} title="Route tracking"><LocateFixed size={16} /></button>
+          <button className="icon-btn" onClick={() => setShowCapabilities(true)} title="Capabilities"><span className="icon-twinkle"><Sparkles size={16} /></span></button>
+          <button className="icon-btn" onClick={toggleTheme} title="Toggle theme"><span className="icon-rays">{theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}</span></button>
+          <button className={`icon-btn ${tracking ? 'active' : ''}`} onClick={toggleTrack} title="Route tracking"><span className={tracking ? 'icon-radar' : ''}><LocateFixed size={16} /></span></button>
           <button className="icon-btn" onClick={() => setShowSettings(true)}><Settings size={16} /></button>
         </div>
       </header>
@@ -262,7 +262,7 @@ export default function App() {
             </div>
             <div className="welcome-stage">
               <div className="stage-glow" /><div className="stage-ring" />
-              <div className="welcome-orb"><Sparkles size={32} /></div>
+              <div className="welcome-orb"><span className="icon-twinkle"><Sparkles size={32} /></span></div>
               <div className="wordmark">WAYPOINT</div>
               <div className="stage-line">AI ROAD-SAFETY INTELLIGENCE · ONLINE</div>
             </div>
@@ -275,7 +275,7 @@ export default function App() {
                 </button>
               ))}
             </div>
-            {pos && <div className="pos-badge"><LocateFixed size={13} /> Location active · {Math.round(pos.accuracy)}m accuracy</div>}
+            {pos && <div className="pos-badge"><span className="icon-radar"><LocateFixed size={13} /></span> Location active · {Math.round(pos.accuracy)}m accuracy</div>}
             <StatusDeck now={now} startedAt={startedAt.current} tracking={tracking} connected={Boolean(db)} weather={weatherSummary} />
             <div className="welcome-footer"><span>BUILT FOR THE MOMENT BETWEEN HERE AND THERE</span><span>SCROLL TO EXPLORE <ChevronRight size={12} /></span></div>
           </div>
@@ -290,7 +290,7 @@ export default function App() {
       <div className="input-bar">
         <div className="input-wrap">
           <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && send()} placeholder="Check road risks, report a hazard, or plan a journey…" />
-          <button className="send-btn" onClick={send} disabled={loading || !input.trim()}><Send size={18} /></button>
+          <button className="send-btn" onClick={send} disabled={loading || !input.trim()}><span className="icon-jet"><Send size={18} /></span></button>
         </div>
         <div className="quick-chips">
           {suggestions.slice(0, 4).map(s => <button key={s.label} onClick={() => setInput(s.label)}><s.icon size={12} /> {s.label}</button>)}
@@ -330,10 +330,10 @@ function formatUptime(startedAt: number, now: number): string {
 function StatusDeck({ now, startedAt, tracking, connected, weather }: { now: Date; startedAt: number; tracking: boolean; connected: boolean; weather: WeatherSummary | null }) {
   return <div className="status-deck">
     <div className="status-card"><div className="status-card-top"><ClockIcon /><span>LOCAL TIME</span><i className="status-live-dot" /></div><strong>{formatClock(now)}</strong><small>{now.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' })}</small></div>
-    <div className="status-card"><div className="status-card-top"><CloudRain size={14} /><span>WEATHER</span><i className="status-live-dot" /></div><strong>{weather ? `${Math.round(weather.temp)}°` : '—'}</strong><small>{weather ? `${weather.condition} · feels ${Math.round(weather.feelsLike)}°` : 'Syncing conditions'}</small></div>
-    <div className="status-card"><div className="status-card-top"><Activity size={14} /><span>SYSTEM STATUS</span><i className="status-live-dot" /></div><strong>{connected ? 'Operational' : 'Offline mode'}</strong><small>{connected ? 'Waypoint network connected' : 'Local experience only'}</small></div>
-    <div className="status-card"><div className="status-card-top"><LocateFixed size={14} /><span>ROUTE SIGNAL</span><i className={`status-live-dot ${tracking ? '' : 'muted'}`} /></div><strong>{tracking ? 'Tracking' : 'Standby'}</strong><small>{tracking ? 'Live safety monitoring on' : 'Enable when you travel'}</small></div>
-    <div className="status-card"><div className="status-card-top"><Sparkles size={14} /><span>AGENT UPTIME</span><i className="status-live-dot" /></div><strong>{formatUptime(startedAt, now.getTime())}</strong><small>Session running smoothly</small></div>
+    <div className="status-card"><div className="status-card-top"><span className="icon-rain"><CloudRain size={14} /></span><span>WEATHER</span><i className="status-live-dot" /></div><strong>{weather ? `${Math.round(weather.temp)}°` : '—'}</strong><small>{weather ? `${weather.condition} · feels ${Math.round(weather.feelsLike)}°` : 'Syncing conditions'}</small></div>
+    <div className="status-card"><div className="status-card-top"><span className="icon-pulse"><Activity size={14} /></span><span>SYSTEM STATUS</span><i className="status-live-dot" /></div><strong>{connected ? 'Operational' : 'Offline mode'}</strong><small>{connected ? 'Waypoint network connected' : 'Local experience only'}</small></div>
+    <div className="status-card"><div className="status-card-top"><span className={tracking ? 'icon-radar' : 'icon-pulse'}><LocateFixed size={14} /></span><span>ROUTE SIGNAL</span><i className={`status-live-dot ${tracking ? '' : 'muted'}`} /></div><strong>{tracking ? 'Tracking' : 'Standby'}</strong><small>{tracking ? 'Live safety monitoring on' : 'Enable when you travel'}</small></div>
+    <div className="status-card"><div className="status-card-top"><span className="icon-twinkle"><Sparkles size={14} /></span><span>AGENT UPTIME</span><i className="status-live-dot" /></div><strong>{formatUptime(startedAt, now.getTime())}</strong><small>Session running smoothly</small></div>
   </div>
 }
 
@@ -341,12 +341,12 @@ function StatusOverlay({ now, startedAt, tracking, connected, weather }: {
   now: Date; startedAt: number; tracking: boolean; connected: boolean; weather: WeatherSummary | null
 }) {
   return <div className="status-overlay">
-    <div className="overlay-label"><Activity size={12} /><span>LIVE STATUS</span></div>
+    <div className="overlay-label"><span className="icon-pulse"><Activity size={12} /></span><span>LIVE STATUS</span></div>
     <div className="overlay-items">
       <div className="overlay-item"><ClockIcon /><div><strong>{formatClock(now)}</strong><small>{now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })}</small></div></div>
-      <div className="overlay-item"><CloudRain size={13} /><div><strong>{weather ? `${Math.round(weather.temp)}°` : '—'}</strong><small>{weather ? weather.condition : 'Syncing'}</small></div></div>
-      <div className="overlay-item"><Activity size={13} /><div><strong>{connected ? 'Operational' : 'Offline'}</strong><small>{connected ? 'Network OK' : 'Local only'}</small></div></div>
-      <div className="overlay-item"><LocateFixed size={13} /><div><strong>{tracking ? 'Tracking' : 'Standby'}</strong><small>{tracking ? 'Monitoring' : 'Idle'}</small></div></div>
+      <div className="overlay-item"><span className="icon-rain"><CloudRain size={13} /></span><div><strong>{weather ? `${Math.round(weather.temp)}°` : '—'}</strong><small>{weather ? weather.condition : 'Syncing'}</small></div></div>
+      <div className="overlay-item"><span className="icon-pulse"><Activity size={13} /></span><div><strong>{connected ? 'Operational' : 'Offline'}</strong><small>{connected ? 'Network OK' : 'Local only'}</small></div></div>
+      <div className="overlay-item"><span className={tracking ? 'icon-radar' : 'icon-pulse'}><LocateFixed size={13} /></span><div><strong>{tracking ? 'Tracking' : 'Standby'}</strong><small>{tracking ? 'Monitoring' : 'Idle'}</small></div></div>
       <div className="overlay-item"><Sparkles size={13} /><div><strong>{formatUptime(startedAt, now.getTime())}</strong><small>Uptime</small></div></div>
     </div>
   </div>
@@ -403,7 +403,7 @@ function JourneyInvestigationCard({ data }: { data: Record<string, unknown> }) {
   const reports = (data.reports as Record<string, unknown>[]) || []
   const center: [number, number] = [(origin.lat + destination.lat) / 2, (origin.lng + destination.lng) / 2]
   return <div className="card investigation-card">
-    <div className="card-head"><Route size={15} /> <span>Journey investigation</span></div>
+    <div className="card-head"><span className="icon-route"><Route size={15} /></span> <span>Journey investigation</span></div>
     {tools && tools.length > 0 && <div className="tool-list">{tools.map((t, i) => <div key={i} className={`tool-row ${t.status}`}><span className={`tool-status ${t.status}`} /><div><strong>{t.label}</strong><small>{t.detail}</small></div></div>)}</div>}
     <div className="invest-map-wrap">
       <MapContainer center={center} zoom={7} className="invest-map" scrollWheelZoom={false}>
@@ -435,17 +435,17 @@ function MapFitBounds({ points }: { points: { lat: number; lng: number }[] }) {
 
 function JourneySavedCard({ data }: { data: Record<string, unknown> }) {
   const j = data.journey as { id: string; origin: string; destination: string; travel_mode: string; departure_at: string }
-  return <div className="card journey-saved-card"><div className="card-head"><Shield size={15} /> <span>Journey saved</span><span className="confirmed-pill">SAVED</span></div><div className="created-detail"><strong>{j.origin} → {j.destination}</strong><span>{j.travel_mode} · departs {new Date(j.departure_at).toLocaleDateString('en', { month: 'short', day: 'numeric' })}</span><span>Ask "enable monitoring" to watch for hazards</span></div></div>
+  return <div className="card journey-saved-card"><div className="card-head"><span className="icon-shield"><Shield size={15} /></span> <span>Journey saved</span><span className="confirmed-pill">SAVED</span></div><div className="created-detail"><strong>{j.origin} → {j.destination}</strong><span>{j.travel_mode} · departs {new Date(j.departure_at).toLocaleDateString('en', { month: 'short', day: 'numeric' })}</span><span>Ask "enable monitoring" to watch for hazards</span></div></div>
 }
 
 function JourneyListCard({ data }: { data: Record<string, unknown> }) {
   const journeys = data.journeys as Journey[]
-  return <div className="card journey-list-card"><div className="card-head"><Shield size={15} /> <span>{journeys.length} saved journeys</span></div>{journeys.map(j => <div key={j.id} className="report-item"><Route size={12} /><div><strong>{j.origin} → {j.destination}</strong><span>{j.travel_mode} · {new Date(j.departure_at).toLocaleDateString('en', { month: 'short', day: 'numeric' })}</span></div></div>)}</div>
+  return <div className="card journey-list-card"><div className="card-head"><span className="icon-shield"><Shield size={15} /></span> <span>{journeys.length} saved journeys</span></div>{journeys.map(j => <div key={j.id} className="report-item"><span className="icon-route"><Route size={12} /></span><div><strong>{j.origin} → {j.destination}</strong><span>{j.travel_mode} · {new Date(j.departure_at).toLocaleDateString('en', { month: 'short', day: 'numeric' })}</span></div></div>)}</div>
 }
 
 function WatchEnabledCard({ data }: { data: Record<string, unknown> }) {
   const j = data.journey as { origin: string; destination: string }
-  return <div className="card watch-card"><div className="card-head"><Shield size={15} /> <span>Monitoring enabled</span><span className="confirmed-pill">ACTIVE</span></div><div className="created-detail"><strong>{j.origin} → {j.destination}</strong><span>I'll check for new road reports and weather changes</span></div></div>
+  return <div className="card watch-card"><div className="card-head"><span className="icon-shield"><Shield size={15} /></span> <span>Monitoring enabled</span><span className="confirmed-pill">ACTIVE</span></div><div className="created-detail"><strong>{j.origin} → {j.destination}</strong><span>I'll check for new road reports and weather changes</span></div></div>
 }
 
 function WeatherCard({ data }: { data: Record<string, unknown> }) {
@@ -453,41 +453,41 @@ function WeatherCard({ data }: { data: Record<string, unknown> }) {
   const forecast = data.forecast as { date: string; condition: string; code: number; high: number; low: number; rain_chance: number }[]
   const location = data.location as string
   return <div className="card weather-card">
-    <div className="card-head"><CloudRain size={15} /> <span>Live weather · {location}</span></div>
-    <div className="weather-current"><div className="weather-icon"><WeatherGlyph code={current.code} /></div><div className="weather-temp">{Math.round(current.temp)}°</div><div className="weather-meta"><strong>{current.condition}</strong><span>Feels {Math.round(current.feels_like)}° · {current.humidity}% humidity</span><span><Wind size={11} /> {Math.round(current.wind)} km/h</span></div></div>
+    <div className="card-head"><span className="icon-rain"><CloudRain size={15} /></span> <span>Live weather · {location}</span></div>
+    <div className="weather-current"><div className="weather-icon"><WeatherGlyph code={current.code} /></div><div className="weather-temp">{Math.round(current.temp)}°</div><div className="weather-meta"><strong>{current.condition}</strong><span>Feels {Math.round(current.feels_like)}° · {current.humidity}% humidity</span><span><span className="icon-wind"><Wind size={11} /></span> {Math.round(current.wind)} km/h</span></div></div>
     <div className="weather-forecast">{forecast.map(f => <div key={f.date} className="forecast-day"><span>{new Date(f.date).toLocaleDateString('en', { weekday: 'short' })}</span><WeatherGlyph code={f.code} small /><span className="forecast-temps">{Math.round(f.high)}° / {Math.round(f.low)}°</span><span className="forecast-rain">{f.rain_chance}%</span></div>)}</div>
   </div>
 }
 
 function WeatherGlyph({ code, small }: { code: number; small?: boolean }) {
-  if (code === 0) return <Sun size={small ? 16 : 28} className="weather-glyph sun" />
-  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return <CloudRain size={small ? 16 : 28} className="weather-glyph rain" />
-  return <CloudRain size={small ? 16 : 28} className="weather-glyph cloud" />
+  if (code === 0) return <span className="icon-rays"><Sun size={small ? 16 : 28} className="weather-glyph sun" /></span>
+  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return <span className="icon-rain"><CloudRain size={small ? 16 : 28} className="weather-glyph rain" /></span>
+  return <span className="icon-float"><CloudRain size={small ? 16 : 28} className="weather-glyph cloud" /></span>
 }
 
 function GeocodeCard({ data }: { data: Record<string, unknown> }) {
   const lat = data.lat as number, lng = data.lng as number, label = data.label as string
-  return <div className="card geocode-card"><div className="card-head"><MapPin size={15} /> <span>{label}</span></div><div className="invest-map-wrap"><MapContainer center={[lat, lng]} zoom={10} className="invest-map" scrollWheelZoom={false}><TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; OpenStreetMap' /><Marker position={[lat, lng]} icon={markerIcon}><Popup><strong>{label}</strong></Popup></Marker></MapContainer></div><div className="geocode-coords">{lat.toFixed(4)}, {lng.toFixed(4)}</div></div>
+  return <div className="card geocode-card"><div className="card-head"><span className="icon-pulse"><MapPin size={15} /></span> <span>{label}</span></div><div className="invest-map-wrap"><MapContainer center={[lat, lng]} zoom={10} className="invest-map" scrollWheelZoom={false}><TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; OpenStreetMap' /><Marker position={[lat, lng]} icon={markerIcon}><Popup><strong>{label}</strong></Popup></Marker></MapContainer></div><div className="geocode-coords">{lat.toFixed(4)}, {lng.toFixed(4)}</div></div>
 }
 
 function ReportsCard({ data }: { data: Record<string, unknown> }) {
   const reports = data.reports as { id: string; title: string; location_name?: string; location_label?: string; level: Level; category: string; latitude: number | null; longitude: number | null }[]
-  return <div className="card reports-card"><div className="card-head"><AlertTriangle size={15} /> <span>{reports.length} road reports</span></div>{reports.map(r => <div key={r.id} className="report-item"><span className={`level-badge ${r.level.toLowerCase()}`} /><div><strong>{r.title}</strong><span><MapPin size={10} /> {r.location_label || r.location_name || 'Unspecified'}</span></div><em className={`level-tag ${r.level.toLowerCase()}`}>{r.level}</em></div>)}</div>
+  return <div className="card reports-card"><div className="card-head"><span className="icon-warn"><AlertTriangle size={15} /></span> <span>{reports.length} road reports</span></div>{reports.map(r => <div key={r.id} className="report-item"><span className={`level-badge ${r.level.toLowerCase()}`} /><div><strong>{r.title}</strong><span><MapPin size={10} /> {r.location_label || r.location_name || 'Unspecified'}</span></div><em className={`level-tag ${r.level.toLowerCase()}`}>{r.level}</em></div>)}</div>
 }
 
 function InboxCard({ data }: { data: Record<string, unknown> }) {
   const emails = data.emails as { sender: string; subject: string; preview: string; category: string }[]
-  return <div className="card inbox-card"><div className="card-head"><Inbox size={15} /> <span>{emails.length} travel messages</span></div>{emails.map((e, i) => <div key={i} className="email-item"><span className="email-avatar">{e.sender[0].toUpperCase()}</span><div><strong>{e.subject}</strong><span>{e.sender} · {e.category}</span></div></div>)}</div>
+  return <div className="card inbox-card"><div className="card-head"><span className="icon-float"><Inbox size={15} /></span> <span>{emails.length} travel messages</span></div>{emails.map((e, i) => <div key={i} className="email-item"><span className="email-avatar">{e.sender[0].toUpperCase()}</span><div><strong>{e.subject}</strong><span>{e.sender} · {e.category}</span></div></div>)}</div>
 }
 
 function ReportCreatedCard({ data }: { data: Record<string, unknown> }) {
   const r = data.report as { id: string; title: string; location_name: string; severity: string; category: string }
-  return <div className="card created-card"><div className="card-head"><Check size={15} /> <span>Report submitted</span></div><div className="created-detail"><strong>{r.title}</strong><span><MapPin size={11} /> {r.location_name}</span><span>Severity: {r.severity} · Category: {r.category}</span></div></div>
+  return <div className="card created-card"><div className="card-head"><span className="icon-check"><Check size={15} /></span> <span>Report submitted</span></div><div className="created-detail"><strong>{r.title}</strong><span><MapPin size={11} /> {r.location_name}</span><span>Severity: {r.severity} · Category: {r.category}</span></div></div>
 }
 
 function TicketOrderCard({ data }: { data: Record<string, unknown> }) {
   const order = data.order as { origin: string; destination: string; travel_mode: string; departure_date: string; traveler_count: number; fare_cents: number; currency: string; confirmation_code: string }
-  return <div className="card ticket-card"><div className="card-head"><Ticket size={15} /> <span>Ticket confirmed</span><span className="confirmed-pill">CONFIRMED</span></div><div className="ticket-route"><div><small>FROM</small><strong>{order.origin}</strong></div><div className="route-arrow"><span /><ArrowUpRight size={15} /></div><div><small>TO</small><strong>{order.destination}</strong></div></div><div className="ticket-meta"><span><strong>{order.travel_mode.toUpperCase()}</strong> · {new Date(order.departure_date).toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' })}</span><span>{order.traveler_count} traveler{order.traveler_count === 1 ? '' : 's'} · {order.currency} {(order.fare_cents / 100).toFixed(2)}</span></div><div className="ticket-confirmation"><span>CONFIRMATION</span><strong>{order.confirmation_code}</strong></div></div>
+  return <div className="card ticket-card"><div className="card-head"><span className="icon-float"><Ticket size={15} /></span> <span>Ticket confirmed</span><span className="confirmed-pill">CONFIRMED</span></div><div className="ticket-route"><div><small>FROM</small><strong>{order.origin}</strong></div><div className="route-arrow"><span /><ArrowUpRight size={15} /></div><div><small>TO</small><strong>{order.destination}</strong></div></div><div className="ticket-meta"><span><strong>{order.travel_mode.toUpperCase()}</strong> · {new Date(order.departure_date).toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' })}</span><span>{order.traveler_count} traveler{order.traveler_count === 1 ? '' : 's'} · {order.currency} {(order.fare_cents / 100).toFixed(2)}</span></div><div className="ticket-confirmation"><span>CONFIRMATION</span><strong>{order.confirmation_code}</strong></div></div>
 }
 
 function CapabilitiesPanel({ onClose }: { onClose: () => void }) {

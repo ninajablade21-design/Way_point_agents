@@ -819,3 +819,63 @@ main { padding-right: 0 !important; }
 [data-theme='light'] .msg.user .msg-text { color: #07566b; background: rgba(8,145,178,.1); }
 [data-theme='light'] .input-wrap { box-shadow: 0 8px 28px rgba(42, 73, 96, .08); }
 [data-theme='light'] .welcome-card:hover, [data-theme='light'] .status-card:hover { box-shadow: 0 10px 26px rgba(8,145,178,.16); }
+
+/* ===== ICON MICRO-ANIMATIONS ===== */
+.icon-rain { display: inline-flex; position: relative; }
+.icon-rain::after {
+  content: ''; position: absolute; left: 50%; top: 100%; width: 2px; height: 5px;
+  border-radius: 0 0 2px 2px; background: var(--accent); transform: translateX(-3px);
+  animation: rainDrop 1.3s linear infinite;
+}
+.icon-rain::before {
+  content: ''; position: absolute; left: 50%; top: 100%; width: 2px; height: 5px;
+  border-radius: 0 0 2px 2px; background: var(--accent); transform: translateX(3px);
+  animation: rainDrop 1.3s linear infinite .5s; opacity: .7;
+}
+@keyframes rainDrop { 0% { transform: translateX(-3px) translateY(-2px); opacity: 0 } 20% { opacity: .8 } 80% { opacity: .5 } 100% { transform: translateX(-3px) translateY(8px); opacity: 0 } }
+.icon-wind { display: inline-flex; animation: windBlow 2s ease-in-out infinite; }
+@keyframes windBlow { 0%, 100% { transform: translateX(0) } 50% { transform: translateX(3px) skewX(-5deg) } }
+.icon-spin-slow { display: inline-flex; animation: spinSlow 12s linear infinite; }
+@keyframes spinSlow { to { transform: rotate(360deg) } }
+.icon-twinkle { display: inline-flex; animation: twinkle 2.5s ease-in-out infinite; }
+@keyframes twinkle { 0%, 100% { opacity: 1; transform: scale(1) } 50% { opacity: .7; transform: scale(1.12) } }
+.icon-rays { display: inline-flex; animation: rayPulse 3s ease-in-out infinite; }
+@keyframes rayPulse { 0%, 100% { filter: drop-shadow(0 0 0 transparent); transform: scale(1) } 50% { filter: drop-shadow(0 0 4px var(--accent)); transform: scale(1.06) } }
+.icon-pulse { display: inline-flex; animation: iconPulse 2.5s ease-in-out infinite; }
+@keyframes iconPulse { 0%, 100% { opacity: 1; transform: scale(1) } 50% { opacity: .75; transform: scale(1.08) } }
+.icon-float { display: inline-flex; animation: iconFloat 3.5s ease-in-out infinite; }
+@keyframes iconFloat { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-2px) } }
+.icon-radar { display: inline-flex; animation: radarSweep 3s linear infinite; }
+@keyframes radarSweep { 0% { transform: rotate(0) } 100% { transform: rotate(360deg) } }
+.icon-warn { display: inline-flex; animation: warnWobble 2.5s ease-in-out infinite; }
+@keyframes warnWobble { 0%, 100% { transform: rotate(0) } 25% { transform: rotate(-6deg) } 75% { transform: rotate(6deg) } }
+.icon-shield { display: inline-flex; animation: shieldGlow 3s ease-in-out infinite; }
+@keyframes shieldGlow { 0%, 100% { filter: drop-shadow(0 0 0 transparent) } 50% { filter: drop-shadow(0 0 3px var(--green)) } }
+.icon-route { display: inline-flex; animation: routeDash 2s ease-in-out infinite; }
+@keyframes routeDash { 0%, 100% { transform: translateX(0) } 50% { transform: translateX(2px) } }
+.icon-zap { display: inline-flex; animation: zapFlicker 2s ease-in-out infinite; }
+@keyframes zapFlicker { 0%, 100% { opacity: 1; filter: drop-shadow(0 0 0 transparent) } 50% { opacity: .85; filter: drop-shadow(0 0 3px var(--amber)) } }
+.icon-check { display: inline-flex; animation: checkPop .5s ease both, checkGlow 3s ease-in-out infinite .5s; }
+@keyframes checkPop { 0% { transform: scale(0); opacity: 0 } 60% { transform: scale(1.2) } 100% { transform: scale(1); opacity: 1 } }
+@keyframes checkGlow { 0%, 100% { filter: drop-shadow(0 0 0 transparent) } 50% { filter: drop-shadow(0 0 3px var(--green)) } }
+.icon-jet { display: inline-flex; transition: transform .2s ease; }
+.send-btn:hover:not(:disabled) .icon-jet { transform: translateX(3px) rotate(-12deg) scale(1.1); }
+.cap-icon { animation: iconFloat 3s ease-in-out infinite; }
+.capability-card:nth-child(2) .cap-icon { animation-delay: .3s; }
+.capability-card:nth-child(3) .cap-icon { animation-delay: .6s; }
+.capability-card:nth-child(4) .cap-icon { animation-delay: .9s; }
+.capability-card:nth-child(5) .cap-icon { animation-delay: 1.2s; }
+.capability-card:nth-child(6) .cap-icon { animation-delay: 1.5s; }
+.setting-icon { animation: iconPulse 3s ease-in-out infinite; }
+.email-avatar { animation: iconFloat 3s ease-in-out infinite; }
+.level-badge { animation: badgePulse 2s ease-in-out infinite; }
+@keyframes badgePulse { 0%, 100% { box-shadow: 0 0 0 0 transparent } 50% { box-shadow: 0 0 6px currentColor } }
+.confirmed-pill { animation: pillShine 3s ease-in-out infinite; }
+@keyframes pillShine { 0%, 100% { box-shadow: 0 0 0 0 transparent } 50% { box-shadow: 0 0 8px color-mix(in srgb, var(--green) 40%, transparent) } }
+
+@media (prefers-reduced-motion: reduce) {
+  .icon-rain::after, .icon-rain::before { animation: none; }
+  .icon-wind, .icon-spin-slow, .icon-twinkle, .icon-rays, .icon-pulse, .icon-float,
+  .icon-radar, .icon-warn, .icon-shield, .icon-route, .icon-zap, .icon-check,
+  .cap-icon, .setting-icon, .email-avatar, .level-badge, .confirmed-pill { animation: none; }
+}
