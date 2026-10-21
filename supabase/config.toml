@@ -1,0 +1,2 @@
+[functions.waypoint-agent]
+verify_jwt = false
