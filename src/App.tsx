@@ -75,7 +75,6 @@ export default function App() {
   const [tickets, setTickets] = useState<TicketOrder[]>([])
   const [journeys, setJourneys] = useState<Journey[]>([])
   const [bootDone, setBootDone] = useState(false)
-  const [overlayExpanded, setOverlayExpanded] = useState(true)
   const startedAt = useRef(Date.now())
   const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -244,7 +243,7 @@ export default function App() {
         </div>
       </header>
 
-      <StatusOverlay now={now} startedAt={startedAt.current} tracking={tracking} connected={Boolean(db)} weather={weatherSummary} expanded={overlayExpanded} onToggle={() => setOverlayExpanded(v => !v)} />
+      <StatusOverlay now={now} startedAt={startedAt.current} tracking={tracking} connected={Boolean(db)} weather={weatherSummary} />
 
       <div className="chat-scroll" ref={scrollRef}>
         {messages.length === 0 && !loading ? (
@@ -277,7 +276,7 @@ export default function App() {
             <div className="welcome-footer"><span>BUILT FOR THE MOMENT BETWEEN HERE AND THERE</span><span>SCROLL TO EXPLORE <ChevronRight size={12} /></span></div>
           </div>
         ) : (
-          <div className="messages">
+          <div key={activeId || 'conversation'} className="messages">
             {messages.map(m => <MessageBubble key={m.id} msg={m} />)}
             {loading && <div className="msg assistant"><div className="msg-avatar"><Sparkles size={14} /></div><div className="thinking"><span /><span /><span /></div></div>}
           </div>
@@ -328,21 +327,18 @@ function StatusDeck({ now, startedAt, tracking, connected, weather }: { now: Dat
   </div>
 }
 
-function StatusOverlay({ now, startedAt, tracking, connected, weather, expanded, onToggle }: {
-  now: Date; startedAt: number; tracking: boolean; connected: boolean; weather: WeatherSummary | null; expanded: boolean; onToggle: () => void
+function StatusOverlay({ now, startedAt, tracking, connected, weather }: {
+  now: Date; startedAt: number; tracking: boolean; connected: boolean; weather: WeatherSummary | null
 }) {
-  return <div className={`status-overlay ${expanded ? 'expanded' : 'collapsed'}`}>
-    <div className="overlay-toggle" onClick={onToggle}>
-      {expanded ? <X size={12} /> : <Activity size={12} />}
-      <span>{expanded ? 'HIDE' : 'STATUS'}</span>
-    </div>
-    {expanded && <div className="overlay-items">
+  return <div className="status-overlay">
+    <div className="overlay-label"><Activity size={12} /><span>LIVE STATUS</span></div>
+    <div className="overlay-items">
       <div className="overlay-item"><ClockIcon /><div><strong>{formatClock(now)}</strong><small>{now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })}</small></div></div>
       <div className="overlay-item"><CloudRain size={13} /><div><strong>{weather ? `${Math.round(weather.temp)}°` : '—'}</strong><small>{weather ? weather.condition : 'Syncing'}</small></div></div>
       <div className="overlay-item"><Activity size={13} /><div><strong>{connected ? 'Operational' : 'Offline'}</strong><small>{connected ? 'Network OK' : 'Local only'}</small></div></div>
       <div className="overlay-item"><LocateFixed size={13} /><div><strong>{tracking ? 'Tracking' : 'Standby'}</strong><small>{tracking ? 'Monitoring' : 'Idle'}</small></div></div>
       <div className="overlay-item"><Sparkles size={13} /><div><strong>{formatUptime(startedAt, now.getTime())}</strong><small>Uptime</small></div></div>
-    </div>}
+    </div>
   </div>
 }
 
