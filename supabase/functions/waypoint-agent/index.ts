@@ -342,15 +342,26 @@ Deno.serve(async (req: Request) => {
         response = "Your travel inbox is empty. Say \"connect my email\" and I'll sync your travel messages.";
       }
     } else {
-      const lower = (lastUserMsg?.content || "").toLowerCase();
-      if (!lower || lower.includes("hello") || lower.includes("hi") || lower.includes("hey") || lower.includes("help")) {
-        response = "I'm **WAYPOINT AI**, your road-safety and journey intelligence agent.\n\nI can:\n• **Investigate a journey** — \"Check road risks from Kochi to Munnar tomorrow\"\n• **Save & monitor journeys** — \"Save my journey from Kochi to Munnar\"\n• **Check live weather** — \"Weather in Munnar?\"\n• **Search road reports** — \"Show road reports near Hill Road\"\n• **Report a hazard** — \"Report a pothole on Marine Drive\"\n• **Find places** — \"Where is Grand Central?\"\n• **Connect & summarize email** — \"Connect my email\"\n\nWhat can I help you with?";
+      const userText = lastUserMsg?.content?.trim() || "";
+      const lower = userText.toLowerCase();
+      const priorAssistant = [...messages].reverse().find(m => m.role === "assistant")?.content || "";
+      const routeContext = messages.some(m => m.role === "assistant" && m.content.toLowerCase().includes("journey investigation"));
+      if (!userText || /^(hello|hi|hey|good morning|good evening)\b/i.test(userText)) {
+        response = "I’m here and ready. Tell me where you’re going, what you’ve noticed on the road, or what you want to keep an eye on. I’ll check the available evidence and be clear about what I can’t verify.";
       } else if (lower.includes("what can you do") || lower.includes("who are you") || lower.includes("your name")) {
-        response = "I'm **WAYPOINT AI**, your road-safety and journey intelligence agent. I combine three capabilities: road risk investigation, journey monitoring, and incident reporting — all through one conversation.\n\nTry: **Check road risks from Kochi to Munnar tomorrow**.";
+        response = "I’m **WAYPOINT AI** — a road-safety agent that investigates journeys, checks weather and reports, helps structure incident reports, and watches saved trips when you ask me to. I don’t label a road safe just because no report was found.\n\nStart with a place or journey, such as: **Check road risks from Kochi to Munnar tomorrow**.";
+      } else if (/^(thanks|thank you|thx)\b/i.test(userText)) {
+        response = "You’re welcome. I’ll keep the distinction between confirmed information, community reports, and uncertainty clear whenever we check something together.";
+      } else if (routeContext && /^(yes|yeah|okay|ok|do it|please do)\b/i.test(userText)) {
+        response = "I can continue with that journey. To take the next step, tell me whether you want to **save it for monitoring** or **prepare a hazard report**. I’ll ask for confirmation before creating anything or sharing information.";
+      } else if (priorAssistant && /why|explain|how sure|source|evidence/i.test(lower)) {
+        response = "That’s a fair question. I can show which tools were used, when the data was retrieved, and which parts are only estimates. Tell me which finding you want me to unpack.";
+      } else if (/^(can you|could you|please|i need|help me)/i.test(userText)) {
+        response = `I can help with that. I read your request as: **${userText}**. Give me the location, route, or incident details involved, and I’ll choose the relevant road-safety checks instead of guessing.`;
       } else if (lastUserMsg?.content) {
-        response = `I understand you're asking about "${lastUserMsg.content}". I can investigate journey risks, monitor saved trips, check weather, search road hazards, help you report incidents, and find places. What would you like me to help with?`;
+        response = `I’m following you: **${userText}**. I can investigate a route, check a location’s weather, search reported hazards, or help turn an observation into a report. Which place or journey should I use?`;
       } else {
-        response = "I'm WAYPOINT AI, your road-safety and journey intelligence agent. Ask me to investigate a journey, check weather, search road hazards, or report an incident.";
+        response = "I’m ready to help with a road, journey, weather condition, or incident. Tell me what happened and where.";
       }
     }
 

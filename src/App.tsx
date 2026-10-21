@@ -148,7 +148,11 @@ export default function App() {
     setToast('Conversation deleted')
   }
   const toggleTrack = () => { setTracking(v => !v); setToast(tracking ? 'Route tracking paused' : 'Route tracking active') }
-  const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark')
+  const toggleTheme = () => {
+    document.documentElement.classList.add('theme-transition')
+    window.setTimeout(() => document.documentElement.classList.remove('theme-transition'), 520)
+    setTheme(t => t === 'dark' ? 'light' : 'dark')
+  }
   const loadTickets = useCallback(async () => {
     if (!db) return
     const { data } = await db.from('ticket_orders').select('*').order('created_at', { ascending: false }).limit(20)
@@ -308,7 +312,13 @@ function BootOverlay({ done }: { done: boolean }) {
 
 function ParticleField() {
   const particles = useMemo(() => Array.from({ length: 24 }, (_, i) => ({ id: i, left: Math.random() * 100, top: Math.random() * 100, size: 1 + Math.random() * 3, delay: Math.random() * 5, duration: 4 + Math.random() * 6 })), [])
-  return <div className="particle-field" aria-hidden="true">{particles.map(p => <span key={p.id} className="particle" style={{ left: `${p.left}%`, top: `${p.top}%`, width: `${p.size}px`, height: `${p.size}px`, animationDelay: `${p.delay}s`, animationDuration: `${p.duration}s` }} />)}</div>
+  return <div className="particle-field" aria-hidden="true">
+    <span className="ambient-orb orb-one" />
+    <span className="ambient-orb orb-two" />
+    <span className="ambient-orb orb-three" />
+    <span className="ambient-grid" />
+    {particles.map(p => <span key={p.id} className="particle" style={{ left: `${p.left}%`, top: `${p.top}%`, width: `${p.size}px`, height: `${p.size}px`, animationDelay: `${p.delay}s`, animationDuration: `${p.duration}s` }} />)}
+  </div>
 }
 
 function formatClock(date: Date): string { return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
