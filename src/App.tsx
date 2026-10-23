@@ -311,12 +311,28 @@ function BootOverlay({ done }: { done: boolean }) {
 }
 
 function ParticleField() {
-  const particles = useMemo(() => Array.from({ length: 24 }, (_, i) => ({ id: i, left: Math.random() * 100, top: Math.random() * 100, size: 1 + Math.random() * 3, delay: Math.random() * 5, duration: 4 + Math.random() * 6 })), [])
+  const particles = useMemo(() => Array.from({ length: 28 }, (_, i) => ({ id: i, left: Math.random() * 100, top: Math.random() * 100, size: 1 + Math.random() * 3, delay: Math.random() * 5, duration: 4 + Math.random() * 6 })), [])
+  const stars = useMemo(() => Array.from({ length: 18 }, (_, i) => ({ id: i, left: Math.random() * 100, top: Math.random() * 70, delay: Math.random() * 4, duration: 2 + Math.random() * 3 })), [])
+  const shooters = useMemo(() => Array.from({ length: 3 }, (_, i) => ({ id: i, top: 5 + Math.random() * 40, delay: i * 6 + Math.random() * 4, duration: 8 + Math.random() * 4 })), [])
+  const shapes = useMemo(() => [
+    { id: 'tri', left: 8, bottom: 12, size: 28, delay: 0, dur: 14 },
+    { id: 'sq', left: 82, bottom: 22, size: 22, delay: -3, dur: 18 },
+    { id: 'hex', left: 68, bottom: 6, size: 18, delay: -7, dur: 12 },
+    { id: 'ring', left: 30, bottom: 30, size: 34, delay: -5, dur: 16 },
+  ], [])
   return <div className="particle-field" aria-hidden="true">
+    <span className="aurora-wave aurora-one" />
+    <span className="aurora-wave aurora-two" />
     <span className="ambient-orb orb-one" />
     <span className="ambient-orb orb-two" />
     <span className="ambient-orb orb-three" />
+    <span className="ambient-orb orb-four" />
+    <span className="ambient-orb orb-five" />
     <span className="ambient-grid" />
+    <span className="scan-line" />
+    {stars.map(s => <span key={s.id} className="bg-star" style={{ left: `${s.left}%`, top: `${s.top}%`, animationDelay: `${s.delay}s`, animationDuration: `${s.duration}s` }} />)}
+    {shapes.map(sh => <span key={sh.id} className={`bg-shape shape-${sh.id}`} style={{ left: `${sh.left}%`, bottom: `${sh.bottom}%`, width: `${sh.size}px`, height: `${sh.size}px`, animationDelay: `${sh.delay}s`, animationDuration: `${sh.dur}s` }} />)}
+    {shooters.map(s => <span key={s.id} className="shooting-star" style={{ top: `${s.top}%`, animationDelay: `${s.delay}s`, animationDuration: `${s.duration}s` }} />)}
     {particles.map(p => <span key={p.id} className="particle" style={{ left: `${p.left}%`, top: `${p.top}%`, width: `${p.size}px`, height: `${p.size}px`, animationDelay: `${p.delay}s`, animationDuration: `${p.duration}s` }} />)}
   </div>
 }
